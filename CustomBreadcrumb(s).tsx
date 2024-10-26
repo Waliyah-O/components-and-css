@@ -130,3 +130,33 @@ export const PluggBreadcrumb: React.FC = () => {
     </>
   );
 };
+
+export const ShowBreadcrumbs = ({ children }: { children: React.ReactNode }) => {
+  const location = useLocation();
+  const pathSegments = location.pathname.split('/').filter(Boolean);
+  
+  // Don't show on parent routes
+  const isParentRoute = 
+    location.pathname === '/' || 
+    location.pathname === '/app' ||
+    location.pathname === '/vendor';
+
+  // Show only if we have nested paths (more than one segment after /app or /vendor)
+  const shouldShowBreadcrumbs = !isParentRoute && pathSegments.length > 1;
+
+  return shouldShowBreadcrumbs ? <>{children}</> : null;
+};
+
+//use case
+const PageLayout = () => {
+  return (
+    <div>
+      <Header />
+      <ShowBreadcrumbs>
+        <Breadcrumbs />
+      </ShowBreadcrumbs>
+      <Outlet />
+      <Footer />
+    </div>
+  );
+};
